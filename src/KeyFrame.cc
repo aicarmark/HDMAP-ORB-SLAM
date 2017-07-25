@@ -719,6 +719,12 @@ void KeyFrame::serialize(Archive &ar, const unsigned int version)
     ar & const_cast<cv::Mat &>(mK);
 
     // mutex needed vars, but don't lock mutex in the save/load procedure
+    if (Archive::is_saving::value)
+    {
+        mMutexPose.lock();
+        mMutexConnections.lock();
+        mMutexFeatures.lock();
+    }
     ar & Tcw & Twc & Ow & Cw;
     ar & mvpMapPoints; // hope boost deal with the pointer graph well
     // BoW
@@ -732,6 +738,12 @@ void KeyFrame::serialize(Archive &ar, const unsigned int version)
     ar & mbNotErase & mbToBeErased & mbBad & mHalfBaseline;
     // Map Points
     ar & mpMap;
+    if (Archive::is_saving::value)
+    {
+        mMutexPose.unlock();
+        mMutexConnections.unlock();
+        mMutexFeatures.unlock();
+    }
     // don't save mutex
 }
 template void KeyFrame::serialize(boost::archive::binary_iarchive&, const unsigned int);
