@@ -95,6 +95,8 @@ public:
     // since last call to this function
     bool MapChanged();
 
+    bool GetShutdown();
+
     // Reset the system (clear map)
     void Reset();
 
@@ -126,7 +128,7 @@ public:
     std::vector<MapPoint*> GetTrackedMapPoints();
     std::vector<cv::KeyPoint> GetTrackedKeyPointsUn();
 #ifdef FUNC_MAP_SAVE_LOAD
-private:
+public:
     // Save/Load functions
     void SaveMap(const string &filename);
     bool LoadMap(const string &filename);

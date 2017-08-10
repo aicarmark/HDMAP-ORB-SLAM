@@ -82,6 +82,8 @@ void Viewer::Run()
 #endif
     pangolin::Var<bool> menuReset("menu.Reset",false,false);
 
+    pangolin::Var<bool> menuSaveMap("menu.SaveBtn",false,false);  
+
     // Define Camera Render Object (for view / scene browsing)
     pangolin::OpenGlRenderState s_cam(
                 pangolin::ProjectionMatrix(1024,768,mViewpointF,mViewpointF,512,389,0.1,1000),
@@ -160,6 +162,13 @@ void Viewer::Run()
             menuFollowCamera = true;
             mpSystem->Reset();
             menuReset = false;
+        }
+        if (menuSaveMap)
+        {
+            //std::this_thread::sleep_for(std::chrono::microseconds(100));
+            mpSystem->SaveMap("");
+            menuSaveMap = false;
+           // std::this_thread::sleep_for(std::chrono::microseconds(100));
         }
 
         if(Stop())

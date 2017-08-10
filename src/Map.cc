@@ -134,19 +134,11 @@ template<class Archive>
 void Map::serialize(Archive &ar, const unsigned int version)
 {
     // don't save mutex
-    if (Archive::is_saving::value)
-    {
-        mMutexMap.lock();
-    }
     ar & mspMapPoints;
     ar & mvpKeyFrameOrigins;
     ar & mspKeyFrames;
     ar & mvpReferenceMapPoints;
     ar & mnMaxKFid & mnBigChangeIdx;
-    if (Archive::is_saving::value)
-    {
-        mMutexMap.unlock();
-    }
 }
 template void Map::serialize(boost::archive::binary_iarchive&, const unsigned int);
 template void Map::serialize(boost::archive::binary_oarchive&, const unsigned int);

@@ -1360,7 +1360,10 @@ bool Tracking::Relocalization()
     vector<KeyFrame*> vpCandidateKFs = mpKeyFrameDB->DetectRelocalizationCandidates(&mCurrentFrame);
 
     if(vpCandidateKFs.empty())
+    {
+        cout << "vpCandidateKFs is empty." << endl;
         return false;
+    }
 
     const int nKFs = vpCandidateKFs.size();
 
@@ -1387,6 +1390,7 @@ bool Tracking::Relocalization()
         else
         {
             int nmatches = matcher.SearchByBoW(pKF,mCurrentFrame,vvpMapPointMatches[i]);
+           // cout << "matches is " << nmatches << endl;
             if(nmatches<15)
             {
                 vbDiscarded[i] = true;
@@ -1401,7 +1405,7 @@ bool Tracking::Relocalization()
             }
         }
     }
-
+ //cout << "nCandidates is " << nCandidates << endl;
     // Alternatively perform some iterations of P4P RANSAC
     // Until we found a camera pose supported by enough inliers
     bool bMatch = false;
@@ -1457,7 +1461,7 @@ bool Tracking::Relocalization()
                 for(int io =0; io<mCurrentFrame.N; io++)
                     if(mCurrentFrame.mvbOutlier[io])
                         mCurrentFrame.mvpMapPoints[io]=static_cast<MapPoint*>(NULL);
-
+ cout << "nGood is " << nGood << endl;
                 // If few inliers, search by projection in a coarse window and optimize again
                 if(nGood<50)
                 {

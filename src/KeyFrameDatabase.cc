@@ -314,11 +314,7 @@ void KeyFrameDatabase::serialize(Archive &ar, const unsigned int version)
 {
     // don't save associated vocabulary, KFDB restore by created explicitly from a new ORBvocabulary instance
     // inverted file
-    if (Archive::is_saving::value)
-        mMutex.lock();
     ar & mvInvertedFile;
-    if (Archive::is_saving::value)
-        mMutex.unlock();
     // don't save mutex
 }
 template void KeyFrameDatabase::serialize(boost::archive::binary_iarchive&, const unsigned int);

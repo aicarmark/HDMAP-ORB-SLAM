@@ -337,6 +337,11 @@ bool System::MapChanged()
         return false;
 }
 
+bool System::GetShutdown()
+{
+    return mpViewer->isFinished();
+}
+
 void System::Reset()
 {
     unique_lock<mutex> lock(mMutexReset);
@@ -429,6 +434,12 @@ void System::SaveTrajectoryTUM(const string &filename)
     cout << endl << "trajectory saved!" << endl;
 }
 
+void save_as_binary(ORB_SLAM2::ORBVocabulary* voc, const std::string outfile) {
+  clock_t tStart = clock();
+  voc->saveToBinaryFile(outfile);
+  printf("Saving as binary: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
+}
+
 
 void System::SaveKeyFrameTrajectoryTUM(const string &filename)
 {
@@ -461,6 +472,9 @@ void System::SaveKeyFrameTrajectoryTUM(const string &filename)
           << " " << q[0] << " " << q[1] << " " << q[2] << " " << q[3] << endl;
 
     }
+
+
+    save_as_binary(mpVocabulary, "newVoc.bin");
 
     f.close();
     cout << endl << "trajectory saved!" << endl;
@@ -542,13 +556,13 @@ vector<cv::KeyPoint> System::GetTrackedKeyPointsUn()
 #ifdef FUNC_MAP_SAVE_LOAD
 void System::SaveMap(const string &filename)
 {
-    std::ofstream out(filename, std::ios_base::binary);
+    std::ofstream out(mapfile, std::ios_base::binary);
     if (!out)
     {
         cerr << "Cannot Write to Mapfile: " << mapfile << std::endl;
         exit(-1);
     }
-    cout << "Saving Mapfile: " << mapfile << std::flush;
+    cout << "Saving Mapfile: " << mapfile << std::endl;
     boost::archive::binary_oarchive oa(out, boost::archive::no_header);
     oa << mpMap;
     oa << mpKeyFrameDatabase;

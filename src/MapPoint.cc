@@ -426,11 +426,6 @@ MapPoint::MapPoint():
 template<class Archive>
 void MapPoint::serialize(Archive &ar, const unsigned int version)
 {
-    if (Archive::is_saving::value)
-    {
-        mMutexPos.lock();
-        mMutexFeatures.lock();
-    }
     ar & mnId & nNextId & mnFirstKFid & mnFirstFrame & nObs;
     // Tracking related vars
     ar & mTrackProjX;
@@ -456,11 +451,6 @@ void MapPoint::serialize(Archive &ar, const unsigned int version)
     ar & mfMinDistance & mfMaxDistance;
     ar & mpMap;
     // don't save the mutex
-    if (Archive::is_saving::value)
-    {
-        mMutexPos.unlock();
-        mMutexFeatures.unlock();
-    }
 }
 template void MapPoint::serialize(boost::archive::binary_iarchive&, const unsigned int);
 template void MapPoint::serialize(boost::archive::binary_oarchive&, const unsigned int);

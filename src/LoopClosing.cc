@@ -63,6 +63,7 @@ void LoopClosing::Run()
         // Check if there are keyframes in the queue
         if(CheckNewKeyFrames())
         {
+            //cout << "CheckNewKeyFrames::Run " << endl;
             // Detect loop candidates and check covisibility consistency
             if(DetectLoop())
             {
@@ -81,7 +82,7 @@ void LoopClosing::Run()
         if(CheckFinish())
             break;
 
-        std::this_thread::sleep_for(std::chrono::microseconds(5000));
+        std::this_thread::sleep_for(std::chrono::microseconds(1000));
     }
 
     SetFinish();
@@ -248,7 +249,7 @@ bool LoopClosing::ComputeSim3()
     vbDiscarded.resize(nInitialCandidates);
 
     int nCandidates=0; //candidates with enough matches
-
+    //cout << "nInitialCandidates is : " << nInitialCandidates << endl;
     for(int i=0; i<nInitialCandidates; i++)
     {
         KeyFrame* pKF = mvpEnoughConsistentCandidates[i];
@@ -263,7 +264,7 @@ bool LoopClosing::ComputeSim3()
         }
 
         int nmatches = matcher.SearchByBoW(mpCurrentKF,pKF,vvpMapPointMatches[i]);
-
+        //cout << "nmatches is : " << nmatches << endl;
         if(nmatches<20)
         {
             vbDiscarded[i] = true;
@@ -280,7 +281,7 @@ bool LoopClosing::ComputeSim3()
     }
 
     bool bMatch = false;
-
+    //cout << "nCandidates is : " << nCandidates << endl;
     // Perform alternatively RANSAC iterations for each candidate
     // until one is succesful or all fail
     while(nCandidates>0 && !bMatch)
@@ -326,6 +327,7 @@ bool LoopClosing::ComputeSim3()
                 const int nInliers = Optimizer::OptimizeSim3(mpCurrentKF, pKF, vpMapPointMatches, gScm, 10, mbFixScale);
 
                 // If optimization is succesful stop ransacs and continue
+                //cout << "nInliers is : " << nInliers << endl;
                 if(nInliers>=20)
                 {
                     bMatch = true;
